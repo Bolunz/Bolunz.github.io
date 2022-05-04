@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Bolun Zhang" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 1</title>
+    <meta name="generator" content="Hugo 0.98.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/post/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project/project1/">Project 1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="name-bolun-zhang" class="section level3">
+<h3>Name: Bolun Zhang</h3>
+</div>
+<div id="eid-bz4392" class="section level3">
+<h3>EID: bz4392</h3>
+</div>
+<div id="name-zixiang-meng" class="section level3">
+<h3>NAme: Zixiang Meng</h3>
+</div>
+<div id="zeid-m4739" class="section level3">
+<h3>zEID: m4739</h3>
+<hr />
+</div>
+<div id="title-and-introduction" class="section level2">
+<h2>Title and Introduction</h2>
+<p>In this project, we choose to discuss the data from the recent Winter Olympic Games which happened in China. For this project, we selected 3 specific datasets, where one contains information about athletes, one contains information about coaches, and one contains information about medals. In the athletes dataset, it contains athletes’ personal information such as name, birthplace and country they are playing for. The coached dataset also present the same format of data for the coaches. In the medal dataset, the type of medals are specified and it also contains the athlete’s name and country for each metal.</p>
+<p>These datasets are acquire from the website ‘kaggle’ through the link <a href="https://www.kaggle.com/datasets/piterfm/beijing-2022-olympics?select=medals.csv" class="uri">https://www.kaggle.com/datasets/piterfm/beijing-2022-olympics?select=medals.csv</a>. They are interesting to our group because this event happened in our home country China and Zixiang also has similar personal experience playing sports within competition.</p>
+<p>We expect to find a trend between the number of athletes from different countries and the total medals they acquire during the events. We also expect a relationship between the number of coaches and the total number of medals for that specific country.</p>
+<p>Import the raw data from local files.</p>
+<pre class="r"><code>athletes &lt;-read.csv(&quot;athletes.csv&quot;)
+coaches &lt;-read.csv(&quot;coaches.csv&quot;)
+medals &lt;-read.csv(&quot;medals.csv&quot;)
+
+#athletes &lt;- read.csv(&quot;~/Downloads/archive-2/athletes.csv&quot;)
+#coaches &lt;- read.csv(&quot;~/Downloads/archive-2/coaches.csv&quot;)
+#medals &lt;- read.csv(&quot;~/Downloads/archive-2/medals.csv&quot;)</code></pre>
+<hr />
+</div>
+<div id="tidying" class="section level2">
+<h2>Tidying</h2>
+<div id="the-datasets-athletes-coaches-medals-are-already-tidy.-each-variable-is-saved-in-its-own-column.-each-observation-is-saved-in-its-own-row.-each-type-of-observation-stored-in-a-single-table." class="section level4">
+<h4>The datasets: “athletes”, “coaches”, “medals” are already tidy. Each variable is saved in its own column. Each observation is saved in its own row. Each type of observation stored in a single table.</h4>
+</div>
+<div id="loading-packages" class="section level4">
+<h4>Loading packages</h4>
+<p>Import the package <code>tidyverse</code> which contains the packages <code>tidyr</code>, <code>dplyr</code>and<code>ggplot2</code>.</p>
+</div>
+<div id="dataframe-manipulation" class="section level4">
+<h4>DataFrame Manipulation</h4>
+<p>Use different functions such as unite() and seperate() to adjust the datasets into optimal format.</p>
+<pre class="r"><code># Use separate() to pull apart height_m.ft into two columns
+# Use unite() to rejoin the residence_place and residence_country
+# Use rename() to set new names as labels
+athletes &lt;- athletes %&gt;% 
+  separate(height_m.ft, into = c(&quot;height_meter&quot;, &quot;height_feet&quot;), sep = &quot;/&quot;, convert = TRUE, remove = FALSE, fill = &quot;right&quot;) %&gt;%
+  unite(residence, residence_place, residence_country, sep = &quot;, &quot;) %&gt;%
+  rename(athlete_name = name) %&gt;%
+  rename(athlete_short_name = short_name) %&gt;%
+  rename(athlete_gender = gender) %&gt;%
+  rename(athlete_residence = residence) %&gt;%
+  rename(athlete_height_meter = height_meter) %&gt;%
+  rename(athlete_height_feet = height_feet) %&gt;%
+  rename(athlete_birth_date = birth_date) %&gt;%
+  rename(athlete_birth_place = birth_place) %&gt;%
+  rename(athlete_birth_country = birth_country) %&gt;%
+  rename(athlete_link = url) %&gt;%
+  select(-height_m.ft)</code></pre>
+<p>Reformat the medal_date</p>
+<pre class="r"><code># change the date format to get rid off the extra data on the date column
+medals$medal_date &lt;- as.Date(medals$medal_date, format = &quot;%Y-%m-%d&quot;)
+medals &lt;- medals %&gt;% arrange(athlete_name)</code></pre>
+<p>Rename the datasets “coaches” to simplfy the data</p>
+<pre class="r"><code># reorder the column &quot;name&quot; by alphabetical order
+coaches &lt;- coaches %&gt;% 
+  rename(coach_name = name) %&gt;%
+  rename(coach_gender = gender) %&gt;%
+  rename(coach_birth_date = birth_date) %&gt;%
+  rename(athlete_link = url) %&gt;%
+  select (-event) </code></pre>
+<hr />
+</div>
+</div>
+<div id="joiningmerging" class="section level2">
+<h2>Joining/Merging</h2>
+<p>Take a first look at the information of each dataset</p>
+<pre class="r"><code># take a look at the dataset &quot;athlete&quot; with glimpse
+glimpse(athletes)</code></pre>
+<pre><code>## Rows: 2,897
+## Columns: 14
+## $ athlete_name          &lt;chr&gt; &quot;AAGAARD Mikkel&quot;, &quot;AALTO Antti&quot;, &quot;AALTONEN Miro&quot;~
+## $ athlete_short_name    &lt;chr&gt; &quot;AAGAARD M&quot;, &quot;AALTO A&quot;, &quot;AALTONEN M&quot;, &quot;ABDELKADE~
+## $ athlete_gender        &lt;chr&gt; &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, ~
+## $ athlete_birth_date    &lt;chr&gt; &quot;1995-10-18&quot;, &quot;1995-04-02&quot;, &quot;1993-06-07&quot;, &quot;1987-~
+## $ athlete_birth_place   &lt;chr&gt; &quot;FREDERIKSHAVN&quot;, &quot;KITEE&quot;, &quot;JOENSUU&quot;, &quot;MUSKEGON, ~
+## $ athlete_birth_country &lt;chr&gt; &quot;Denmark&quot;, &quot;Finland&quot;, &quot;Finland&quot;, &quot;United States ~
+## $ country               &lt;chr&gt; &quot;Denmark&quot;, &quot;Finland&quot;, &quot;Finland&quot;, &quot;United States ~
+## $ country_code          &lt;chr&gt; &quot;DEN&quot;, &quot;FIN&quot;, &quot;FIN&quot;, &quot;USA&quot;, &quot;KSA&quot;, &quot;USA&quot;, &quot;ERI&quot;,~
+## $ discipline            &lt;chr&gt; &quot;Ice Hockey&quot;, &quot;Ski Jumping&quot;, &quot;Ice Hockey&quot;, &quot;Ice ~
+## $ discipline_code       &lt;chr&gt; &quot;IHO&quot;, &quot;SJP&quot;, &quot;IHO&quot;, &quot;IHO&quot;, &quot;ALP&quot;, &quot;BOB&quot;, &quot;ALP&quot;,~
+## $ athlete_residence     &lt;chr&gt; &quot;ORNSKOLDSVIK, Sweden&quot;, &quot;KUOPIO, Finland&quot;, &quot;PODO~
+## $ athlete_height_meter  &lt;dbl&gt; 1.84, NA, 1.80, 1.87, NA, NA, NA, 1.95, 1.93, NA~
+## $ athlete_height_feet   &lt;chr&gt; &quot;6&#39;0&#39;&#39;&quot;, NA, &quot;5&#39;10&#39;&#39;&quot;, &quot;6&#39;1&#39;&#39;&quot;, NA, NA, NA, &quot;6&#39;4~
+## $ athlete_link          &lt;chr&gt; &quot;../../../en/results/ice-hockey/athlete-profile-~</code></pre>
+<pre class="r"><code># take a look at the dataset &quot;coaches&quot; with glimpse
+glimpse(coaches)</code></pre>
+<pre><code>## Rows: 77
+## Columns: 7
+## $ coach_name       &lt;chr&gt; &quot;BARES Jakub&quot;, &quot;BEIGHTON Sean&quot;, &quot;BEIGHTON Sean&quot;, &quot;BEL~
+## $ coach_gender     &lt;chr&gt; &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Male~
+## $ coach_birth_date &lt;chr&gt; &quot;1988-03-20&quot;, &quot;1988-11-22&quot;, &quot;1988-11-22&quot;, &quot;1961-08-04~
+## $ country          &lt;chr&gt; &quot;Czech Republic&quot;, &quot;United States of America&quot;, &quot;United~
+## $ discipline       &lt;chr&gt; &quot;Curling&quot;, &quot;Curling&quot;, &quot;Curling&quot;, &quot;Curling&quot;, &quot;Ice Hock~
+## $ function.        &lt;chr&gt; &quot;Coach&quot;, &quot;Coach&quot;, &quot;Coach&quot;, &quot;Coach&quot;, &quot;Head Coach&quot;, &quot;Co~
+## $ athlete_link     &lt;chr&gt; &quot;../../../en/results/curling/athlete-profile-n1034345~</code></pre>
+<pre class="r"><code># dataset &quot;medals&quot;
+glimpse(medals)</code></pre>
+<pre><code>## Rows: 694
+## Columns: 12
+## $ medal_type         &lt;chr&gt; &quot;Gold&quot;, &quot;Silver&quot;, &quot;Silver&quot;, &quot;Silver&quot;, &quot;Silver&quot;, &quot;Go~
+## $ medal_code         &lt;int&gt; 1, 2, 2, 2, 2, 1, 1, 3, 2, 1, 1, 3, 1, 1, 2, 2, 2, ~
+## $ medal_date         &lt;date&gt; 2022-02-20, 2022-02-16, 2022-02-20, 2022-02-15, 20~
+## $ athlete_short_name &lt;chr&gt; &quot;AALTONEN M&quot;, &quot;ABRAMENKO O&quot;, &quot;AICHER E&quot;, &quot;ALDOSHKIN~
+## $ athlete_name       &lt;chr&gt; &quot;AALTONEN Miro&quot;, &quot;ABRAMENKO Oleksandr&quot;, &quot;AICHER Emm~
+## $ athlete_sex        &lt;chr&gt; &quot;M&quot;, &quot;M&quot;, &quot;X&quot;, &quot;M&quot;, &quot;W&quot;, &quot;W&quot;, &quot;M&quot;, &quot;W&quot;, &quot;M&quot;, &quot;W&quot;, &quot;~
+## $ athlete_link       &lt;chr&gt; &quot;../../../en/results/ice-hockey/athlete-profile-n10~
+## $ event              &lt;chr&gt; &quot;Men&quot;, &quot;Men&#39;s Aerials&quot;, &quot;Mixed Team Parallel&quot;, &quot;Men~
+## $ country            &lt;chr&gt; &quot;Finland&quot;, &quot;Ukraine&quot;, &quot;Germany&quot;, &quot;ROC&quot;, &quot;Germany&quot;, ~
+## $ country_code       &lt;chr&gt; &quot;FIN&quot;, &quot;UKR&quot;, &quot;GER&quot;, &quot;ROC&quot;, &quot;GER&quot;, &quot;CAN&quot;, &quot;NOR&quot;, &quot;S~
+## $ discipline         &lt;chr&gt; &quot;Ice Hockey&quot;, &quot;Freestyle Skiing&quot;, &quot;Alpine Skiing&quot;, ~
+## $ discipline_code    &lt;chr&gt; &quot;IHO&quot;, &quot;FRS&quot;, &quot;ALP&quot;, &quot;SSK&quot;, &quot;SJP&quot;, &quot;IHO&quot;, &quot;NCB&quot;, &quot;C~</code></pre>
+<p>The dataset “athletes” contains 2897 rows/observations and 14 columns/variables. The dataset “athletes” has 7 unique IDs: “athlete_birth_date”, “athlete_birth_place”, “athlete_birth_country”, “athlete_residence”, “residence_country”, athlete_height_meter”, and “athlete_height_feet”. The dataset “athletes” with dataset “medals” have 7 common IDs: “athlete_name”, “athlete_short_name”, “country”, “country_code”, “discipline”, “discipline_code”, and “athlete_link”.</p>
+<p>The dataset “medals” contains 694 rows/observations and 12 columns/variables. It has 5 unique IDs are “medal_type”, “medal_code”, “medal_date”, “athlete_sex”, and “event”. The dataset “medals” with atheltes “medals” have 7 common IDs: “athlete_short_name”, “athlete_name”, “athlete_link”, “country”, “country_code”, “discipline”, and “discipline_code”.</p>
+<p>The dataset “coaches” contains 77 rows/observations and 7 columns/variables. Its unique IDs are “coach_name”, “coach_gender”, “coach_birth_date”, “event”, and “function”. Its common IDs are “country”, “discipline”, and “athlete_link”.</p>
+<div id="now-we-want-to-join-the-data-of-athletes-with-medals-to-have-the-athletes-matched-with-their-medals-then-we-want-to-join-that-dataset-with-coaches-to-have-each-coache-matched-with-their-corresponding-dicipline-and-country." class="section level4">
+<h4>Now we want to join the data of athletes with medals to have the athletes matched with their medals, then we want to join that dataset with coaches to have each coache matched with their corresponding dicipline and country.</h4>
+<pre class="r"><code># Join the separated data sources into combined dataset
+# Join &quot;medals&quot; into &quot;athletes&quot; by using right_join() and common variables: &quot;athlete_name&quot;, &quot;athlete_short_name&quot;, &quot;country&quot;, &quot;country_code&quot;, &quot;discipline&quot;, &quot;discipline_code&quot;, &quot;athlete_link&quot; and delete the column &quot;athlete_sex&quot;.
+athletes_with_medals &lt;- athletes %&gt;% 
+  right_join(medals, by = c(&quot;athlete_name&quot;, &quot;athlete_short_name&quot;, &quot;country&quot;, &quot;country_code&quot;, &quot;discipline&quot;, &quot;discipline_code&quot;, &quot;athlete_link&quot;)) %&gt;%
+  select(- athlete_sex)
+
+#check if there are any duplicates
+sum(duplicated(athletes_with_medals))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code># Join dataset &quot;coaches&quot; into the new dataset &quot;athletes_with_medals&quot; by using left_join and common variables&quot; &quot;country&quot; and &quot;discipline&quot;.
+athletes_with_medals_coaches &lt;- athletes_with_medals %&gt;% 
+  left_join(coaches, by = c(&quot;country&quot;, &quot;discipline&quot;))</code></pre>
+<p>I combine the datasets “athletes” and “medals” as a new dataset “athletes_with_medals”, which contians 694 rows/observations. There are 2897 athletes participate the tournament and 694 athletes win medals. Therefore, there are 2203 rows/observations dropped when joinning the two datasets.</p>
+<p>I combine the dataset “coaches” and the “athletes_with_medals” as final dataset “athletes_with_medals_coaches”, which contians 986 rows/observations. Some athletes have more than one coaches. Therefore, there are 292 rows/observations added when joining the two datasets.</p>
+<p>The related potential issues is that the athletes may have duplicated coaches. However, the relationship between coaches and medals are weak. We can not find the useful insight from the data.</p>
+<hr />
+</div>
+</div>
+<div id="wrangling" class="section level2">
+<h2>Wrangling</h2>
+<p>First, we are interested in finding the ratio of gender for the athletes who a medal.</p>
+<pre class="r"><code># first we can find out the proportion of male athletes who won a medal
+athletes_with_medals %&gt;% 
+  select(athlete_gender) %&gt;% 
+  summarize(proportions_male = mean(athlete_gender == &quot;Male&quot;, na.rm = T))</code></pre>
+<pre><code>##   proportions_male
+## 1        0.5508721</code></pre>
+<pre class="r"><code># then we can find out the proportion of female athletes who won a medal the same way
+athletes_with_medals %&gt;% 
+  select(athlete_gender) %&gt;% 
+  summarize(proportions_female = mean(athlete_gender == &quot;Female&quot;, na.rm = T))</code></pre>
+<pre><code>##   proportions_female
+## 1          0.4491279</code></pre>
+<p>As we see above, in this winter Olympics, the proportion of males who won a medal is about 55%, where the female proportion is about 45%. The proportion of male is about 10 percent higher than that of females.</p>
+<p>Even though heights may have different effects in different games, we still want to discuss if this higher proportion of medal winning rate related to gender has anything to do with the average height of this gender</p>
+<pre class="r"><code># calculate the mean height of the male athletes
+athletes_with_medals %&gt;% 
+  filter(athlete_gender == &quot;Male&quot;) %&gt;% 
+  summarise(mean_height = mean(athlete_height_meter,na.rm = TRUE))</code></pre>
+<pre><code>##   mean_height
+## 1       1.842</code></pre>
+<pre class="r"><code># # calculate the mean height of the female athletes
+athletes_with_medals %&gt;% 
+  filter(athlete_gender == &quot;Female&quot;) %&gt;% 
+  summarise(mean_height = mean(athlete_height_meter,na.rm = TRUE))</code></pre>
+<pre><code>##   mean_height
+## 1    1.696667</code></pre>
+<p>The mean height for male is 1.842 meters, where the mean height of female is 1.697 meters. We can see that in general, the male athletes are higher compare to the female athletes.</p>
+<p>But is height really a factor for winning a medal? We decide to calculate the average height for each type of medals (for example, gold, silver and etc). (This is not quite precise because for each type of game, different height range is optimal, but it is still interesting to see if it has a effect)</p>
+<pre class="r"><code># calculate the mean height for athletes who on a gold medal
+athletes_with_medals %&gt;% 
+  filter(medal_type == &quot;Gold&quot;) %&gt;% 
+  summarise(mean_height = mean(athlete_height_meter,na.rm = TRUE))</code></pre>
+<pre><code>##   mean_height
+## 1    1.782206</code></pre>
+<pre class="r"><code># calculate the mean height for athletes who on a silver medal
+athletes_with_medals %&gt;% 
+  filter(medal_type == &quot;Silver&quot;) %&gt;% 
+  summarise(mean_height = mean(athlete_height_meter,na.rm = TRUE))</code></pre>
+<pre><code>##   mean_height
+## 1    1.775362</code></pre>
+<pre class="r"><code># calculate the mean height for athletes who on a bronze medal
+athletes_with_medals %&gt;% 
+  filter(medal_type == &quot;Bronze&quot;) %&gt;% 
+  summarise(mean_height = mean(athlete_height_meter,na.rm = TRUE))</code></pre>
+<pre><code>##   mean_height
+## 1    1.778158</code></pre>
+<p>As shown above, even though the mean height for the gold medal winners are slightly higher than the other two types, they are not drastically different from each others. Thus, we concluded that generally, height is not a critical factor for winning a medal in the winter Olympic games.</p>
+<p>Since both of us come from China, we are curious about what proportion of athletes who won medals comes from China</p>
+<pre class="r"><code># calculate the proportion of athletes who come from China
+athletes_with_medals %&gt;% 
+  select(country) %&gt;% 
+  summarize(proportions = mean(country == &quot;People&#39;s Republic of China&quot;))</code></pre>
+<pre><code>##   proportions
+## 1  0.03746398</code></pre>
+<p>As calculated, about 3.7 percent of athletes who on a medal in the winter Olympic game did come from China.</p>
+<p>One of our group’s members hometown is Harbin, China. We want to further investigate if there are any athletes who come from Harbin who won a medal in the winter Olympics. And if so, how many?</p>
+<pre class="r"><code># calculate the total number of athletes who won a medal in the game and comes from Harbin
+athletes_with_medals %&gt;% 
+  filter(athlete_birth_place == &quot;HARBIN&quot;) %&gt;% 
+  summarize(athletes_from_Harbin=n())</code></pre>
+<pre><code>##   athletes_from_Harbin
+## 1                    5</code></pre>
+<pre class="r"><code># calculate the percentage of athletes from Harbin
+athletes_with_medals %&gt;% 
+  mutate(if_harbin = ifelse(athlete_birth_place==&#39;HARBIN&#39;,T,F)) %&gt;% 
+  select(if_harbin) %&gt;% 
+  summarise_all(mean,na.rm = TRUE)</code></pre>
+<pre><code>##     if_harbin
+## 1 0.007267442</code></pre>
+<p>Surprisingly, there are 5 athletes who came from Harbin and won a medal in the winter Olympics. This is about 0.7 percent of the entire group of the athletes.</p>
+<p>Now we want to discuss whether the number of athletes has a effect on the medals counts for a specific country. Thus we joined the data accordingly.</p>
+<pre class="r"><code># summaries the total medal counts for each country
+medalcount &lt;- athletes_with_medals %&gt;% 
+  group_by(country) %&gt;% 
+  summarise(total_medals=n())
+
+# summaries the total athletes counts for each country
+athletescount &lt;- athletes %&gt;% 
+  group_by(country) %&gt;% 
+  summarise(total_athletes = n())
+
+# joined the two datasets to have a complimentry view of how the number of athletes affects the medal counts
+athletes_medals_percountry &lt;- athletescount %&gt;% 
+  left_join(medalcount, by = c(&quot;country&quot;))%&gt;%
+  mutate_all(~replace(., is.na(.), 0)) %&gt;%
+  arrange(desc(total_medals))
+
+# check whether the countries is distinct
+athletes %&gt;% summarize(n_distinct(country))</code></pre>
+<pre><code>##   n_distinct(country)
+## 1                  91</code></pre>
+<p>We are also interested in whether the number of coaches has a effect on the medal counts for a country, so we do the same for the coaches dataset.</p>
+<pre class="r"><code># find out the to total number of coaches and total number of medals 
+coach_medal &lt;- athletes_with_medals_coaches %&gt;% 
+  group_by(country) %&gt;% 
+  summarise(total_coaches = n_distinct(coach_name), total_medals = n_distinct(athlete_name)) %&gt;%
+  arrange(desc(total_medals))
+
+head(coach_medal)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country                  total_coaches total_medals
+##   &lt;chr&gt;                            &lt;int&gt;        &lt;int&gt;
+## 1 ROC                                  3           68
+## 2 Canada                               8           59
+## 3 United States of America             3           57
+## 4 Finland                              4           52
+## 5 Germany                              1           47
+## 6 Norway                               4           34</code></pre>
+<hr />
+</div>
+<div id="creating-visualization" class="section level2">
+<h2>Creating Visualization</h2>
+<p>To get a general visualization of the relationship, we used a bar plots to see whether the number of athletes has a effect on the medal counts for the top 32 countries on the medal counts.</p>
+<pre class="r"><code># create a plot showing the relationship between total medal counts and number of athletes
+athletes_medals_percountry %&gt;%
+   arrange(desc(total_athletes))%&gt;%
+   slice(1:32)%&gt;%
+   ggplot(aes(x = country, y = total_athletes, fill = total_medals)) +
+   geom_bar(stat=&quot;identity&quot;)+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+   labs(title = &quot;Total medal counts vs. Total number of athletes per country&quot;, x = &quot;Country&quot;, y = &quot;Totol number of athletes&quot;)</code></pre>
+<p><img src="/project/project1_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+In this graph, we can see that for countries with more athletes, they relatively have more medals earned in the Olympics. Countries with less than 50 athletes usually earned around 10 medals, where countries with more than 200 athletes earned more than 80 medals. Among all the countries, the US, Russia and Canada have the most athletes playing in the Olympic, which corresponded to a relatively high number of medals.</p>
+<p>To further investigate the exact relationship, we used a point plot to calculate the effects of athletes’ count on medals.</p>
+<pre class="r"><code># Relationship between number of athletics and number of medals
+ggplot(data = athletes_medals_percountry, aes(x=total_athletes, y=total_medals)) +
+  geom_point() + 
+  geom_smooth(method=&#39;lm&#39;) +
+  scale_x_continuous(n.breaks = 5) + 
+  labs(title = &quot;Relationship Between Number of Athletes and Medals &quot;) +
+  scale_x_continuous(&quot;number of athletes&quot;, limits = c(0, 250)) +
+  scale_y_continuous(&quot;number of medals&quot;, limits = c(0, 85))</code></pre>
+<p><img src="/project/project1_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># investigate the numeric relatioship specifically
+model &lt;- lm(total_medals ~ total_athletes, data=athletes_medals_percountry)
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = total_medals ~ total_athletes, data = athletes_medals_percountry)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -32.393  -0.607   0.523   1.088  35.631 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    -1.37106    1.08919  -1.259    0.211    
+## total_athletes  0.28263    0.01753  16.121   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 8.922 on 89 degrees of freedom
+## Multiple R-squared:  0.7449, Adjusted R-squared:  0.742 
+## F-statistic: 259.9 on 1 and 89 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The graph shows the correlation between number of athletes and number of medals for countries with medals. When the country has one more athletes participate in the tournament, the number of medal of the country would increase 0.29 unit with standard error by 0.046. The predicted model would be Y = X(0.29) - 1.83.</p>
+<p>Further on, we are curious if the number of coaches has a effect on the medal counts for each country. We decide to use a point plot and do a best fit to see if these two variables are related, just like what we did in the last part.</p>
+<pre class="r"><code># make a plot that shows the relationship between number of coaches and number of medals
+coach_medal %&gt;% 
+  ggplot(aes(x = total_coaches, y = total_medals))+
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;, formula= y~x) +
+  labs(title = &quot;Total medal counts vs. Total number of coaches&quot;, x = &quot;Coaches&quot;, y = &quot;Medals&quot;) +
+  scale_x_continuous(n.breaks = 4 )</code></pre>
+<p><img src="/project/project1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>model2 &lt;- lm(total_medals ~ total_coaches, data=coach_medal)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = total_medals ~ total_coaches, data = coach_medal)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -25.61  -9.93  -2.93   5.07  42.84 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      5.317      4.511   1.179   0.2489    
+## total_coaches    6.614      1.638   4.038   0.0004 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 16.04 on 27 degrees of freedom
+## Multiple R-squared:  0.3765, Adjusted R-squared:  0.3534 
+## F-statistic: 16.31 on 1 and 27 DF,  p-value: 0.0004001</code></pre>
+<p>In this graph, we can see that there is a weak relationship between the number of coaches and the number of total medals earn by a country. It does seems like more coaches would result in more medals for the country that the coaches came from, but there were still many countries who earned a lot of medals with only one coach. The relationship between these two variables are not very obvious.</p>
+<p>Last but not least, we just want to show you the top 10 medals winning country for your convenient.And here it is!
+The following graph show the Top 10 Country</p>
+<pre class="r"><code># plot the graph
+athletes_medals_percountry %&gt;%
+   arrange(desc(total_athletes))%&gt;%
+   slice(1:10)%&gt;%
+   ggplot(aes(x = reorder(country, total_medals), y = total_medals)) +
+   geom_bar(stat=&quot;identity&quot;, color=&#39;skyblue&#39;, fill=&#39;steelblue&#39;)+
+   coord_flip() +
+   labs(title = &quot;Top 10 Country with Medals&quot;, x = &quot;Country&quot;, y =  &quot;Number of Medals&quot;)</code></pre>
+<p><img src="/project/project1_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+<div id="formatting" class="section level2">
+<h2>Formatting</h2>
+<div id="comment-your-code-write-full-sentences-and-knit-your-file" class="section level5">
+<h5>Comment your code, write full sentences, and knit your file!</h5>
+<hr />
+<pre><code>##           sysname           release           version          nodename 
+##         &quot;Windows&quot;          &quot;10 x64&quot;     &quot;build 19044&quot; &quot;DESKTOP-JUHSCG2&quot; 
+##           machine             login              user    effective_user 
+##          &quot;x86-64&quot;           &quot;18475&quot;           &quot;18475&quot;           &quot;18475&quot;</code></pre>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
